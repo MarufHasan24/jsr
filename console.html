@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Console</title>
+    <style>
+        body {
+            font-family: "Courier New", Courier, monospace;
+            background-color: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        #ide,
+        #console {
+            width: 50%;
+            height: 92vh;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            background: #000;
+            color: #fff;
+            padding: 2vh;
+            font-size: 18px;
+        }
+
+        #ide {
+            background: #222;
+            color: #eee;
+        }
+
+        #ide textarea,
+        #console textarea {
+            width: 100%;
+            height: 98%;
+            background: #282c34;
+            color: #eee;
+            border: none;
+            outline: none;
+            font-family: "Courier New", Courier, monospace;
+            resize: none;
+            padding: 1%;
+            font-size: 18px;
+        }
+
+        #console textarea {
+            height: 93%;
+            background: #000;
+            color: #fff;
+            padding: 1%;
+        }
+
+        #ide #toolbox {
+            width: 100%;
+            height: 5%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #222;
+        }
+
+        #console #prompt {
+            width: 100%;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: left;
+            align-items: top;
+            background-color: #000000;
+            width: 100%;
+        }
+
+        #console #prompt div {
+            padding: 1%;
+        }
+
+        #console #prompt input {
+            display: flex;
+            border: none;
+            background-color: #000000;
+            color: white;
+            font-family: "Courier New", Courier, monospace;
+            outline: none;
+            width: 100%;
+            height: 5vh;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="ide">
+        <div id="toolbox">
+            <div class="section">
+                <button onclick="incresFontSize()">+</button>
+                <button onclick="decreseFontSize()">-</button>
+                <button onclick="resetFontSize()">Reset fonts</button>
+            </div>
+            <div class="section">
+                <button onclick="location.reload()">Reset compiler</button>
+                <button id="run" onclick="run()">Run</button>
+            </div>
+        </div>
+        <textarea name="ide" id="idetxt" spellcheck="false"></textarea>
+    </div>
+    <div id="console">
+        <div id="prompt"></div>
+        <textarea name="cons" id="cons"></textarea>
+    </div>
+    <script>
+        var cons = document.getElementById("cons");
+        var ide = document.getElementById("idetxt");
+        var inputdiv = document.getElementById("prompt");
+        var scriptm = document.getElementById("scriptm");
+        var rundiv = document.getElementById("run");
+        var ideFontSize = 18;
+        function incresFontSize() {
+            ideFontSize += 2;
+            ide.style.fontSize = ideFontSize + "px";
+        }
+        function decreseFontSize() {
+            ideFontSize -= 2;
+            ide.style.fontSize = ideFontSize + "px";
+        }
+        function resetFontSize() {
+            ideFontSize = 18;
+            ide.style.fontSize = ideFontSize + "px";
+        }
+        var err = null;
+        if (localStorage.getItem("ide")) {
+            ide.value = localStorage.getItem("ide");
+        }
+        ide.addEventListener("keyup", (e) => {
+            if (e.key == "Enter" && e.shiftKey) {
+                e.preventDefault();
+                run();
+            } else if (e.key == "Tab") {
+                e.preventDefault();
+                ide.value += "    ";
+            } else if (e.key == "ArrowLeft" && e.ctrlKey) {
+                e.preventDefault();
+                ide.value = cons.value;
+            } else {
+                localStorage.setItem("ide", ide.value);
+            }
+        });
+        function run() {
+            localStorage.setItem("ide", ide.value);
+            rundiv.disabled = true;
+            var ap = async () => {
+                return await new Promise((resolve, reject) => {
+                    try {
+                        console.time("Execution time");
+                        resolve(eval(main(ide.value)))
+                        console.timeEnd("Execution time");
+                    } catch (e) {
+                        reject(e)
+                    }
+                });
+            };
+            ap().then((res) => {
+                //console.log(res);
+            }).catch((e) => {
+                let msg = e.message.replace(/import/g, "include").replace(/global\./g, "").replace(/_(var|let|const|main)/g, function (match) { return match.replace("_", ""); });
+                cons.innerHTML += msg !== "Exit code 0" ? "\nError >" + msg : msg;
+            });
+        }
+    </script>
+    <script src="compiler.js"></script>
+</body>
+
+</html>

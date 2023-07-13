@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>jsr Programming Language Documentation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>JSR</h1>
+    <p>
+        JSR stands for javascript reverse. It is a programming language that is designed for fun. <b>It is not
+            absulatlly a
+            reverse
+            version of javascript</b>. It is a complicated language. It is compiled to javascript. You have to write
+        this
+        programme
+        in a file with .jsr extension but from the bottom. That means the last line of your code will be the first line
+        of your file. And the first line of your code will be the last line of your file.
+    </p>
+    <p>
+        <imp>
+            <b>Warning:</b> Don't miss any semicolon. If you miss any semicolon, you will get an error.
+            <b>Warning:</b> Don't use any keyword as a variable name. If you use any keyword as a variable name, you
+            will get an error.
+            <b>Warning:</b> Must include std to start your code. If you don't include std, you will get an
+            error.<code>#include&lt;std&gt;</code>
+        </imp>
+    </p>
+    <p>
+        Problem is not end here. The blocks of this code will run from top to bottom, like other programmes. But the
+        lines of a block will run from bottom to top. That means the last line of a block will run first and the first
+        line of a block will run last.
+    </p>
+    <h2>Confused?</h2>
+    <p>
+        Let's see an example. Suppose you want to print "Hello, world!" in the console. In javascript, you will write
+        this code:
+    <pre><code>console.log("Hello, world!");</code></pre>
+    But in jsr, you have to write this code:
+    <pre><code>
+print("Hello, world!");
+#include&lt;std&gt;
+    </code></pre>
+    This was prity easy, right!
+    </p>
+    <p>
+        But now, let's see a complex example. Suppose you want to print the sum of two numbers. In javascript, you will
+        write
+        this code:
+    <pre><code>
+    let a = 10;
+    let b = 20;
+    let c = 0;
+    console.log(c); // 0
+    function sum(a, b) {
+        c += a + b;
+        return c;
+    }
+    console.log(sum(a, b));// 30
+    </code></pre>
+    But in jsr, you have to write this code:
+    <pre><code>
+print(c); /* 0 */
+velt c = 0;
+velt b = 20;
+velt a = 10;
+print(c); /*Error : Cannot access 'c' before initialization*/
+#include<std>
+function sum1(a, b) {
+    return c;
+    c += a;
+    c += a + b;
+}
+function sum2(a, b) {
+    c += a + b;
+    return c;
+}
+print(sum1(a, b)); /* 40 */
+print(sum2(a, b)); /* undefined */
+    </code></pre>
+    This was a little bit complex, right!
+    </p>
+    <p>
+        You can use any text editor to write this code. But you have to compile this code <a
+            href="./console.html">here</a>.
+    </p>
+    <h2>Variables</h2>
+    <p>
+        In jsr, you can declare variables using the following keywords:
+    <ul>
+        <li><code>velt</code>: Used to declare a mutable variable.</li>
+        <li><code>velc</code>: Used to declare a constant variable.</li>
+    </ul>
+    Example:
+    <pre><code>velt myVariable = 42;
+const PI = 3.14;</code></pre>
+    </p>
+
+    <h2>Importing Modules</h2>
+    <p>
+        To import modules in jsr, use the <code>include</code> keyword.
+        Example:
+    <pre><code>#include<myModule></code></pre>
+    </p>
+
+    <h2>Output</h2>
+    <p>
+        To print output to the console, use the <code>print()</code> function.
+        Example:
+    <pre><code>print("Hello, world!");</code></pre>
+    </p>
+
+    <h2>Input</h2>
+    <p>
+        To read input from the user, use the <code>input()</code> function.
+        Example:
+    <pre><code>velt name = input("Enter your name:");</code></pre>
+    </p>
+
+    <h2>Exit</h2>
+    <p>
+        To exit the program, use the <code>exit()</code> function.
+        Example:
+    <pre><code>exit();</code></pre>
+    </p>
+
+    <h2>Clearing the Console</h2>
+    <p>
+        To clear the console, use the <code>clear()</code> function.
+        Example:
+    <pre><code>clear();</code></pre>
+    </p>
+
+    <h2>Type Conversion</h2>
+    <p>
+        To convert values to specific types, use the following functions:
+    <ul>
+        <li><code>num()</code>: Converts a value to a number.</li>
+        <li><code>str()</code>: Converts a value to a string.</li>
+    </ul>
+    Example:
+    <pre><code>velt number = num("42");
+velt string = str(3.14);</code></pre>
+    </p>
+    <h2>Operators</h2>
+    <p>
+        In jsr, you can use the following operators:
+    <ul>
+        <li><code>+</code>: Addition operator.</li>
+        <li><code>-</code>: Subtraction operator.</li>
+        <li><code>*</code>: Multiplication operator.</li>
+        <li><code>/</code>: Division operator.</li>
+        <li><code>%</code>: Modulus operator.</li>
+        <li><code>**</code>: Exponentiation operator.</li>
+        <li><code>++</code>: Increment operator.</li>
+        <li><code>--</code>: Decrement operator.</li>
+        <li><code>+=</code>: Addition assignment operator.</li>
+        <li><code>-=</code>: Subtraction assignment operator.</li>
+        <li><code>*=</code>: Multiplication assignment operator.</li>
+        <li><code>/=</code>: Division assignment operator.</li>
+        <li><code>%=</code>: Modulus assignment operator.</li>
+        <li class="new"><code>=+</code>: Addition before assignment operator.</li>
+        <li class="new"><code>=-</code>: Subtraction before assignment operator.</li>
+        <li class="new"><code>=*</code>: Multiplication before assignment operator.</li>
+        <li class="new"><code>=/</code>: Division before assignment operator.</li>
+        <li class="new"><code>=%</code>: Modulus before assignment operator.</li>
+        <li><code>**=</code>: Exponentiation assignment operator.</li>
+        <li><code>==</code>: Equality operator.</li>
+        <li><code>!=</code>: Inequality operator.</li>
+        <li><code>===</code>: Strict equality operator.</li>
+        <li><code>!==</code>: Strict inequality operator.</li>
+        <li><code>&gt;</code>: Greater than operator.</li>
+        <li><code>&lt;</code>: Less than operator.</li>
+        <li><code>&gt;=</code>: Greater than or equal to operator.</li>
+        <li><code>&lt;=</code>: Less than or equal to operator.</li>
+        <li><code>&amp;&amp;</code>: Logical AND operator.</li>
+        <li><code>||</code>: Logical OR operator.</li>
+        <li><code>!</code>: Logical NOT operator.</li>
+        <li class="new"><code>!</code>: factorial operator if you use it after a number or a special variable.</li>
+        <li class="new"><code>||</code>: modulas operator if you put a number or a special variable between it.</li>
+        <li class="new"><code>^</code>: XOR operator.</li>
+        <li class="new"><code>!^</code>: NOT operator.</li>
+        <li class="new"><code>!&amp;</code>: NAND operator.</li>
+        <li class="new"><code>!|</code>: NOR operator.</li>
+    </ul>
+    </p>
+    <h2>Basic keywords</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Keyword</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>velt</td>
+                <td>Declares a block-scoped variable.</td>
+            </tr>
+            <tr>
+                <td>if</td>
+                <td>Used to specify a block of code to be executed if a condition is true.</td>
+            </tr>
+            <tr>
+                <td>else</td>
+                <td>Used to specify a block of code to be executed if the same condition is false.</td>
+            </tr>
+            </tr>
+            <tr>
+                <td>while</td>
+                <td>Creates a loop that executes a block of code as long as the condition is
+                </td>
+            </tr>
+            <tr>
+                <td>break</td>
+                <td>Terminates the current loop or switch statement.</td>
+            </tr>
+            <tr>
+                <td>case</td>
+                <td>Specifies a block of code to be executed in a switch statement.</td>
+            </tr>
+            <tr>
+                <td>catch</td>
+                <td>Specifies a block of code to be executed when an error occurs in a try block.</td>
+            </tr>
+            <tr>
+                <td>class</td>
+                <td>Declares a class.</td>
+            </tr>
+            <tr>
+                <td>velc</td>
+                <td>Declares a block-scoped constant (read-only) variable.</td>
+            </tr>
+            <tr>
+                <td>continue</td>
+                <td>Skips the current iteration of a loop and continues with the next iteration.</td>
+            </tr>
+            <tr>
+                <td>debugger</td>
+                <td>Stops the execution of JavaScript and calls the debugging function.</td>
+            </tr>
+            <tr>
+                <td>default</td>
+                <td>Specifies a default case in a switch statement.</td>
+            </tr>
+            <tr>
+                <td>delete</td>
+                <td>Deletes an object's property.</td>
+            </tr>
+            <tr>
+                <td>do</td>
+                <td>Creates a loop that executes a block of code as long as the condition is true.</td>
+            </tr>
+            <tr>
+                <td>else</td>
+                <td>Specifies a block of code to be executed if the condition in an if statement is false.</td>
+            </tr>
+            <tr>
+                <td>extends</td>
+                <td>Specifies the class to be inherited from in a class definition.</td>
+            </tr>
+            <tr>
+                <td>finally</td>
+                <td>Specifies a block of code to be executed after a try/catch block.</td>
+            </tr>
+            <tr>
+                <td>for</td>
+                <td>Creates a loop that consists of three optional expressions: initialization, condition, and final
+                    expression. Separate expressions with a coma(,).
+                </td>
+            </tr>
+            <tr>
+                <td>function</td>
+                <td>Declares a function.</td>
+            </tr>
+            <tr>
+                <td>if</td>
+                <td>Specifies a block of code to be executed if a condition is true.</td>
+            </tr>
+            <tr>
+                <td>#include</td>
+                <td>Used to import functions, objects, or values from a module.</td>
+            </tr>
+            <tr>
+                <td>in</td>
+                <td>Checks if a specified property is in a specified object.</td>
+            </tr>
+            <tr>
+                <td>instanceof</td>
+                <td>Checks if an object is an instance of a specified object type.</td>
+            </tr>
+            <tr>
+                <td>let</td>
+                <td>Declares a block-scoped variable.</td>
+            </tr>
+            <tr>
+                <tdd>
+                    <td>Creates an instance of an object or a user-defined type.</td>
+            </tr>
+            <tr>
+                <td>return</td>
+                <td>Specifies the value to be returned by a function.</td>
+            </tr>
+            <tr>
+                <td>super</td>
+                <td>Refers to the superclass in a class definition.</td>
+            </tr>
+            <tr>
+                <td>switch</td>
+                <td>Evaluates an expression and executes a block of code based on a matching case.</td>
+            </tr>
+            <tr>
+                <td>this</td>
+                <td>Refers to the current object.</td>
+            </tr>
+            <tr>
+                <td>throw</td>
+                <td>Throws an exception (user-defined or built-in).</td>
+            </tr>
+            <tr>
+                <td>try</td>
+                <td>Specifies a block of code to be tested for errors.</td>
+            </tr>
+            <tr>
+                <td>typeof</td>
+                <td>Returns a string indicating the type of a variable or expression.</td>
+            </tr>
+            <tr>
+                <td>var</td>
+                <td>Declares a variable.</td>
+            </tr>
+            <tr>
+                <td>void</td>
+                <td>Specifies that an expression should be evaluated without returning a value.</td>
+            </tr>
+            <tr>
+                <td>while</td>
+                <td>Creates a loop that executes a block of code as long as the condition is true.</td>
+            </tr>
+            <tr>
+                <td>with</td>
+                <td>Adds a block of code with a specified object as the scope.</td>
+            </tr>
+            <tr>
+                <td>yield</td>
+                <td>Pauses and resumes a generator function.</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+    <p class="license" xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a
+            property="dct:title" rel="cc:attributionURL"
+            href="https://github.com/MarufHasan24/jsr/blob/main/compiler.html">javascript reverse
+        </a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName"
+            href="https://github.com/MarufHasan24">Md. maruf hasan</a> is licensed under <a
+            href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank"
+            rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC 4.0<img
+                style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"
+                src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img
+                style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"
+                src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img
+                style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"
+                src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1">
+        </a>
+    </p>
+</body>
+
+</html>
