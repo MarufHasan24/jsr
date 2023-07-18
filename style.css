@@ -1,0 +1,86 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    counter-reset: li;
+}
+
+pre {
+    width: 100%;
+}
+
+pre code {
+    display: block;
+    padding: 10px;
+    overflow-x: auto;
+    white-space: pre;
+    background-color: #f4f4f4;
+    border-radius: 4px;
+    font-family: Consolas, monospace;
+}
+
+h1 {
+    font-size: 24px;
+}
+
+h2 {
+    font-size: 20px;
+}
+
+code {
+    background-color: #f4f4f4;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: Consolas, monospace;
+}
+
+p.license {
+    font-size: 12px;
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+ol li {
+    display: list-item;
+    width: 100%;
+    grid-gap: 10px;
+    margin-bottom: 2px
+}
+
+ol li code {
+    display: inline-block;
+    text-align: center;
+    background-color: #3c3c3c;
+    border-radius: 4px;
+    font-family: Consolas, monospace;
+    color: #fff;
+    width: 50px;
+    margin-right: 10px;
+}
+
+.new::after {
+    counter-increment: li;
+    content: "" counter(li) ": NEW";
+    display: inline;
+    width: 50px;
+    color: #fff;
+    background-color: rgb(0, 179, 255);
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-left: 4px;
+}
