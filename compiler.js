@@ -3,19 +3,19 @@ const inp = inputdiv;
 const head = scriptm;
 function main(data) {
   const _name = { JSON, Number, String, Error };
+  var std = false;
   globalThis.global = {
     printf: function (...args) {
       var text = "";
       for (var i = 0; i < args.length; i++) {
         var arg = args[i];
-        var type = typeof arg;
-        if (type == "object") {
-          text += _name.JSON.stringify(arg).replace(/"/g, "");
-        } else if (type == "function") {
-          text += "ƒ" + arg + "(){ [code] }";
-        } else {
-          text += arg;
-        }
+        text += _name.JSON.stringify(arg, function (key, value) {
+          if (typeof value == "function") {
+            return "f " + key + "() {[code]}";
+          } else {
+            return value;
+          }
+        }).replace(/"/g, "");
       }
       cnsl.innerHTML += "$ " + text + "\n";
     },
@@ -83,6 +83,7 @@ function main(data) {
       return !(a && b);
     },
   };
+  var header = "";
   var strtingArray = [];
   var data = data
     .replace(/\/\/.+/g, "")
@@ -129,8 +130,6 @@ function main(data) {
     let lines = "";
     if (data.includes("#include")) {
       data = getIncludes(data);
-    } else if (data.includes("#exclude")) {
-      data = getExcude(data);
     }
     if (data.includes(";")) {
       lines = data.replace(/;/g, ";<token:003B>").split("<token:003B>");
@@ -165,7 +164,6 @@ function main(data) {
       }
       line = line
         .replace(/dt/, "new global.date")
-        .replace(/math/, "global.math")
         .replace(/input/g, "await global.input")
         .replace(/print/g, "global.printf")
         .replace(/json/g, "global.json")
@@ -248,13 +246,11 @@ function main(data) {
     return strtingArray[sindex];
   });
   strtingArray = undefined;
-  console.log(returncode);
-  if (defaultExport) {
-    return returncode;
-  }
-  return "(async function () {" + returncode + "})()";
+  console.log(header + returncode);
+  return "(async function () {" + header + returncode + "})()";
 
   function getIncludes(data) {
+    console.log(data);
     return data
       .replace(/#include\<[\w\d\,]+\>/g, function (match) {
         let sname = match.replace(/#include\<|\>/g, "");
@@ -266,9 +262,10 @@ function main(data) {
             throw new Error(...args);
           };
         } else {
-          //console.log(sname, sname.includes("json"), sname.includes("obj"));
-          if (!sname.includes("std")) {
-            throw new Error("start with std");
+          if (!sname.includes("std") || std) {
+            throw "started without std";
+          } else {
+            std = true;
           }
           if (sname.includes("json")) {
             global.json = JSON;
@@ -279,22 +276,22 @@ function main(data) {
             };
           }
           if (sname.includes("math")) {
-            global.math = Math;
+            header += 'let math = (await import("./math_laibrary.js")).math;';
+          } else if (sname.includes("num")) {
+            addNumProto();
+          } else {
+            Number = undefined;
           }
           if (sname.includes("date")) {
             global.date = Date;
           }
-          if (!sname.includes("obj")) {
-            Object = undefined;
-          }
-          if (!sname.includes("arr")) {
-            Array = undefined;
+          if (sname.includes("arr")) {
+            addArrProto();
           }
           if (!sname.includes("str")) {
             String = undefined;
-          }
-          if (!sname.includes("num")) {
-            Number = undefined;
+          } else {
+            addStrProto();
           }
           if (!sname.includes("bool")) {
             Boolean = undefined;
@@ -307,7 +304,7 @@ function main(data) {
           }
         }
         JSON = undefined;
-        Math = undefined;
+        //Math = undefined;
         Date = undefined;
         Error = undefined;
         return "";
@@ -316,5 +313,105 @@ function main(data) {
         let sname = match.split('"')[1];
         return "const " + sname + ' = await import("./' + sname + '.js");';
       });
+  }
+  function addNumProto() {
+    Number.__proto__.odd = function () {
+      return this % 2 !== 0;
+    };
+    Number.__proto__.prime = function () {
+      if (this > 0) {
+        if (this === 2) {
+          return true;
+        } else if (this > 1) {
+          for (let i = 2; i < this; i++) {
+            if (this % i !== 0) {
+              return true;
+            } else if (this === i * i) {
+              return false;
+            } else {
+              return false;
+            }
+          }
+        } else {
+          return false;
+        }
+      } else {
+        throw "Require a positive number";
+      }
+    };
+    Number.__proto__.fact = function () {
+      let result = 1;
+      if (this > 0) {
+        for (let i = 1; i <= this; i++) {
+          result *= i;
+        }
+        return result;
+      } else {
+        throw "Require a positive number";
+      }
+    };
+  }
+  function addArrProto() {
+    Array.__proto__.range = function (start, end, step) {
+      if (step === undefined) {
+        step = 1;
+      }
+      let result = [];
+      if (start < end) {
+        for (let i = start; i < end; i += step) {
+          result.push(i);
+        }
+      } else {
+        for (let i = start; i > end; i += step) {
+          result.push(i);
+        }
+      }
+      return result;
+    };
+    Array.__proto__.sum = function () {
+      let result = 0;
+      for (let i = 0; i < this.length; i++) {
+        result += this[i];
+      }
+      return result;
+    };
+    Array.__proto__.product = function () {
+      let result = 1;
+      for (let i = 0; i < this.length; i++) {
+        result *= this[i];
+      }
+      return result;
+    };
+    Array.__proto__.mean = function () {
+      return this.sum() / this.length;
+    };
+    Array.__proto__.median = function () {
+      let sorted = this.sort();
+      if (sorted.length % 2 === 0) {
+        return (sorted[sorted.length / 2] + sorted[sorted.length / 2 - 1]) / 2;
+      } else {
+        return sorted[Math.floor(sorted.length / 2)];
+      }
+    };
+    Array.__proto__.mode = function () {
+      let count = {};
+      for (let i = 0; i < this.length; i++) {
+        if (count[this[i]] === undefined) {
+          count[this[i]] = 1;
+        } else {
+          count[this[i]] += 1;
+        }
+      }
+      let max = 0;
+      let result;
+      for (let i in count) {
+        if (count[i] > max) {
+          max = count[i];
+          result = i;
+        }
+      }
+      return result;
+    };
+    Array.__proto__.GCD = function () {};
   }
 }
