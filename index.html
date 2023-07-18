@@ -89,8 +89,8 @@ print(sum2(a, b)); /* undefined */
     <p>
         In jsr, you can declare variables using the following keywords:
     <ul>
-        <li><code>velt</code>: Used to declare a mutable variable.</li>
-        <li><code>velc</code>: Used to declare a constant variable.</li>
+        <li><code>velt</code> <span>Used to declare a mutable variable.</span></li>
+        <li><code>velc</code> <span>Used to declare a constant variable.</span></li>
     </ul>
     Example:
     <pre><code>velt myVariable = 42;
@@ -136,8 +136,8 @@ const PI = 3.14;</code></pre>
     <p>
         To convert values to specific types, use the following functions:
     <ul>
-        <li><code>num()</code>: Converts a value to a number.</li>
-        <li><code>str()</code>: Converts a value to a string.</li>
+        <li><code>num()</code> <span>Converts a value to a number.</span></li>
+        <li><code>str()</code> <span>Converts a value to a string.</span></li>
     </ul>
     Example:
     <pre><code>velt number = num("42");
@@ -146,44 +146,118 @@ velt string = str(3.14);</code></pre>
     <h2>Operators</h2>
     <p>
         In jsr, you can use the following operators:
-    <ul>
-        <li><code>+</code>: Addition operator.</li>
-        <li><code>-</code>: Subtraction operator.</li>
-        <li><code>*</code>: Multiplication operator.</li>
-        <li><code>/</code>: Division operator.</li>
-        <li><code>%</code>: Modulus operator.</li>
-        <li><code>**</code>: Exponentiation operator.</li>
-        <li><code>++</code>: Increment operator.</li>
-        <li><code>--</code>: Decrement operator.</li>
-        <li><code>+=</code>: Addition assignment operator.</li>
-        <li><code>-=</code>: Subtraction assignment operator.</li>
-        <li><code>*=</code>: Multiplication assignment operator.</li>
-        <li><code>/=</code>: Division assignment operator.</li>
-        <li><code>%=</code>: Modulus assignment operator.</li>
-        <li class="new"><code>=+</code>: Addition before assignment operator.</li>
-        <li class="new"><code>=-</code>: Subtraction before assignment operator.</li>
-        <li class="new"><code>=*</code>: Multiplication before assignment operator.</li>
-        <li class="new"><code>=/</code>: Division before assignment operator.</li>
-        <li class="new"><code>=%</code>: Modulus before assignment operator.</li>
-        <li><code>**=</code>: Exponentiation assignment operator.</li>
-        <li><code>==</code>: Equality operator.</li>
-        <li><code>!=</code>: Inequality operator.</li>
-        <li><code>===</code>: Strict equality operator.</li>
-        <li><code>!==</code>: Strict inequality operator.</li>
-        <li><code>&gt;</code>: Greater than operator.</li>
-        <li><code>&lt;</code>: Less than operator.</li>
-        <li><code>&gt;=</code>: Greater than or equal to operator.</li>
-        <li><code>&lt;=</code>: Less than or equal to operator.</li>
-        <li><code>&amp;&amp;</code>: Logical AND operator.</li>
-        <li><code>||</code>: Logical OR operator.</li>
-        <li><code>!</code>: Logical NOT operator.</li>
-        <li class="new"><code>!</code>: factorial operator if you use it after a number or a special variable.</li>
-        <li class="new"><code>||</code>: modulas operator if you put a number or a special variable between it.</li>
-        <li class="new"><code>^</code>: XOR operator.</li>
-        <li class="new"><code>!^</code>: NOT operator.</li>
-        <li class="new"><code>!&amp;</code>: NAND operator.</li>
-        <li class="new"><code>!|</code>: NOR operator.</li>
-    </ul>
+    <ol>
+        <li><code>+</code> <span>Addition operator.</span></li>
+        <li><code>-</code> <span>Subtraction operator.</span></li>
+        <li><code>*</code> <span>Multiplication operator.</span></li>
+        <li><code>/</code> <span>Division operator.</span></li>
+        <li><code>%</code> <span>Modulus operator.</span></li>
+        <li><code>**</code> <span>Exponentiation operator.</span></li>
+        <li><code>++</code> <span>Increment operator.</span></li>
+        <li><code>--</code> <span>Decrement operator.</span></li>
+        <li><code>+=</code> <span>Addition assignment operator.</span></li>
+        <li><code>-=</code> <span>Subtraction assignment operator.</span></li>
+        <li><code>*=</code> <span>Multiplication assignment operator.</span></li>
+        <li><code>/=</code> <span>Division assignment operator.</span></li>
+        <li><code>%=</code> <span>Modulus assignment operator.</span></li>
+        <li class="new"><code>=+</code> <span>Addition before assignment operator.</span></li>
+        <li class="new"><code>=-</code> <span>Subtraction before assignment operator.</span></li>
+        <li class="new"><code>=*</code> <span>Multiplication before assignment operator.</span></li>
+        <li class="new"><code>=/</code> <span>Division before assignment operator.</span></li>
+        <li class="new"><code>=%</code> <span>Modulus before assignment operator.</span></li>
+        <li><code>**=</code> <span>Exponentiation assignment operator.</span></li>
+        <li><code>==</code> <span>Equality operator.</span></li>
+        <li><code>!=</code> <span>Inequality operator.</span></li>
+        <li><code>===</code> <span>Strict equality operator.</span></li>
+        <li><code>!==</code> <span>Strict inequality operator.</span></li>
+        <li><code>&gt;</code> <span>Greater than operator.</span></li>
+        <li><code>&lt;</code> <span>Less than operator.</span></li>
+        <li><code>&gt;=</code> <span>Greater than or equal to operator.</span></li>
+        <li><code>&lt;=</code> <span>Less than or equal to operator.</span></li>
+        <li><code>&amp;&amp;</code> <span>Logical AND operator.</span></li>
+        <li><code>||</code> <span>Logical OR operator.</span></li>
+        <li><code>!</code> <span>Logical NOT operator.</span></li>
+        <li class="new"><code>!</code> <span>factorial operator if you use it after a number or a special
+                variable.</span></li>
+        <li class="new"><code>||</code> <span>absloute operator if you put a number or a special variable between
+                it.</span></li>
+        <li class="new"><code>^</code> <span>XOR operator.</span></li>
+        <li class="new"><code>!^</code> <span>XNOR operator.</span></li>
+        <li class="new"><code>!&amp;</code> <span>NAND operator.</span></li>
+        <li class="new"><code>!|</code> <span>NOR operator.</span></li>
+        <li>
+            <code>&lt;&lt;</code> <span>Left shift assignment operator.
+            </span>
+        </li>
+        <li>
+            <code>&gt;&gt;</code> <span>Right shift assignment operator.
+            </span>
+        </li>
+        <li>
+            <code>&amp;</code> <span>Bitwise AND operator.
+            </span>
+        </li>
+        <li>
+            <code>|</code> <span>Bitwise OR operator.
+            </span>
+        </li>
+        <li>
+            <code>~</code> <span>Bitwise NOT operator.
+            </span>
+        </li>
+        <li>
+            <code>^</code> <span>Bitwise XOR operator.
+            </span>
+        </li>
+        <li>
+            <code>&amp;=</code> <span>Bitwise AND assignment operator.
+            </span>
+        </li>
+        <li>
+            <code>|=</code> <span>Bitwise OR assignment operator.
+            </span>
+        </li>
+        <li>
+            <code>^=</code> <span>Bitwise XOR assignment operator.
+            </span>
+        </li>
+        <li>
+            <code>~</code> <span>Bitwise NOT operator.
+            </span>
+        </li>
+        <li>
+            <code>&lt;&lt;=</code> <span>Left shift assignment operator.
+            </span>
+        </li>
+        <li>
+            <code>&gt;&gt;=</code> <span>Right shift assignment operator.
+            </span>
+        </li>
+        <li>
+            <code>&amp;&amp;=</code> <span>Logical AND assignment operator.
+            </span>
+        </li>
+        <li>
+            <code>||=</code> <span>Logical OR assignment operator.
+            </span>
+        </li>
+        <li>
+            <code>??</code> <span>Nullish coalescing operator.
+            </span>
+        </li>
+        <li>
+            <code>??=</code> <span>Nullish coalescing assignment operator.
+            </span>
+        </li>
+        <li>
+            <code>?.</code> <span>Optional chaining operator.
+            </span>
+        </li>
+        <li>
+            <code>?:</code> <span>Ternary operator.
+            </span>
+        </li>
+    </ol>
     </p>
     <h2>Basic keywords</h2>
     <table>

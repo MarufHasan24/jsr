@@ -168,7 +168,8 @@
             ap().then((res) => {
                 //console.log(res);
             }).catch((e) => {
-                let msg = e.message.replace(/import/g, "include").replace(/global\./g, "").replace(/_(var|let|const|main)/g, function (match) { return match.replace("_", ""); });
+                console.log(e);
+                let msg = typeof e !== "string" ? e.message?.replace(/import/g, "include").replace(/global\./g, "")?.replace(/_(var|let|const|main)/g, function (match) { return match.replace("_", ""); }) : e;
                 cons.innerHTML += msg !== "Exit code 0" ? "\nError >" + msg : msg;
             });
         }
