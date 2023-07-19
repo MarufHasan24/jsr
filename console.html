@@ -151,28 +151,6 @@
                 localStorage.setItem("ide", ide.value);
             }
         });
-        function run() {
-            localStorage.setItem("ide", ide.value);
-            rundiv.disabled = true;
-            var ap = async () => {
-                return await new Promise((resolve, reject) => {
-                    try {
-                        console.time("Execution time");
-                        resolve(eval(main(ide.value)))
-                        console.timeEnd("Execution time");
-                    } catch (e) {
-                        reject(e)
-                    }
-                });
-            };
-            ap().then((res) => {
-                //console.log(res);
-            }).catch((e) => {
-                console.log(e);
-                let msg = typeof e !== "string" ? e.message?.replace(/import/g, "include").replace(/global\./g, "")?.replace(/_(var|let|const|main)/g, function (match) { return match.replace("_", ""); }) : e;
-                cons.innerHTML += msg !== "Exit code 0" ? "\nError >" + msg : msg;
-            });
-        }
     </script>
     <script src="compiler.min.js"></script>
 </body>
