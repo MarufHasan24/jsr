@@ -5,7 +5,7 @@ function main(data) {
   const _name = { JSON, Number, String, Error };
   var std = false;
   globalThis.global = {
-    printf: function (...args) {
+    jso: function (...args) {
       var text = "";
       for (var i = 0; i < args.length; i++) {
         var arg = args[i];
@@ -19,7 +19,7 @@ function main(data) {
       }
       cnsl.innerHTML += "$ " + text + "\n";
     },
-    input: function (qustion) {
+    jsin: function (qustion) {
       return new Promise((resolve, reject) => {
         inp.innerHTML = "";
         inp.innerHTML =
@@ -43,9 +43,9 @@ function main(data) {
     clear: function () {
       cnsl.innerHTML = "";
     },
-    exit: function () {
+    exit: function (num) {
       cnsl.innerHTML += "$_";
-      throw new _name.Error("Exit code 0");
+      throw new _name.Error("Exit code " + num ? num : 0);
     },
     sleep: function (ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
@@ -414,4 +414,36 @@ function main(data) {
     };
     Array.__proto__.GCD = function () {};
   }
+}
+function run() {
+  localStorage.setItem("ide", ide.value);
+  rundiv.disabled = true;
+  var ap = async () => {
+    return await new Promise((resolve, reject) => {
+      try {
+        console.time("Execution time");
+        resolve(eval(main(ide.value)));
+        console.timeEnd("Execution time");
+      } catch (e) {
+        reject(e);
+      }
+    });
+  };
+  ap()
+    .then((res) => {
+      //console.log(res);
+    })
+    .catch((e) => {
+      console.log(e);
+      let msg =
+        typeof e !== "string"
+          ? e.message
+              ?.replace(/import/g, "include")
+              .replace(/global\./g, "")
+              ?.replace(/_(var|let|const|main)/g, function (match) {
+                return match.replace("_", "");
+              })
+          : e;
+      cons.innerHTML += !msg.includes("Exit code ") ? "\nError >" + msg : msg;
+    });
 }
