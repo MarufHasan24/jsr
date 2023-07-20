@@ -12,7 +12,7 @@ console.log(z);
 would be written in jsr as:
 
 ```jsr
-print(z);
+jro(z);
 velt z = y + x;
 velt y = 6;
 velt x = 5;
@@ -36,14 +36,14 @@ velc y = 6; // constant
 
 ### input, output, comments and includes
 
-Input is taken using the `input` keyword. print is done using the `print` keyword. `''` is used for block comments. `//` is used for single line comments. `#include <std>` is used to include the standard library. Without standard library included, the code will not run.
+Input is taken using the `jrin` keyword. jro is done using the `jro` keyword. `'${COMMENT}'` is used for block comments. `//` is used for single line comments. `#include <std>` is used to include the standard library. Without standard library included, the code will not run.
 
 For example:
 
 ```jsr
-'this is block comment'
-print(x =+ "your name is "); // your name is <name>
-velt x = input("what is your name?");
+'this is a block comment'
+jro(x =+ "your name is "); // your name is <name>
+velt x = jrin("what is your name?");
 #include <std>
 ```
 
@@ -73,8 +73,8 @@ The standard library is a collection of functions that are used in jsr. It is in
 
 ### other libraries
 
-- `#include <math>` - includes the math library. It has all the math functions that are in JavaScript. Moreover it has some extra functions like `sec` , `cosec`, `cot`, `logx`, `mean`, `rootx` etc.
-- `#include <arr>` - includes the array library. It has all the array functions that are in JavaScript. Moreover it has some extra functions like `mean`, `sum`, `range`, `GCD` etc.
+- `#include <math>` - includes the math library. It has all the math functions that are in JavaScript. Moreover it has more than 20 extra functions like `sec` , `cosec`, `cot`, `logx`, `mean`, `rootx` etc.
+- `#include <arr>` - includes the array library. It has all the array functions that are in JavaScript. Moreover it has some extra features like `mean`, `sum`, `range`, `GCD` etc.
 - `#include <obj>` - includes the object library
 - `#include <date>` - includes the date library
 - `#include <bool>` - includes the boolean library
