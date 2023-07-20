@@ -144,6 +144,7 @@
             } else if (e.key == "Tab") {
                 e.preventDefault();
                 ide.value += "    ";
+                ide.focus()
             } else if (e.key == "ArrowLeft" && e.ctrlKey) {
                 e.preventDefault();
                 ide.value = cons.value;
@@ -152,7 +153,8 @@
             }
         });
     </script>
-    <script src="compiler.min.js"></script>
+    <!-- <script src="compiler.min.js"></script> -->
+    <script src="compiler.js"></script>
 </body>
 
 </html>

@@ -5,7 +5,7 @@ function main(data) {
   const _name = { JSON, Number, String, Error };
   var std = false;
   globalThis.global = {
-    jso: function (...args) {
+    jro: function (...args) {
       var text = "";
       for (var i = 0; i < args.length; i++) {
         var arg = args[i];
@@ -19,7 +19,7 @@ function main(data) {
       }
       cnsl.innerHTML += "$ " + text + "\n";
     },
-    jsin: function (qustion) {
+    jrin: function (qustion) {
       return new Promise((resolve, reject) => {
         inp.innerHTML = "";
         inp.innerHTML =
@@ -95,26 +95,28 @@ function main(data) {
       return "<token:s" + (strtingArray.length - 1);
     })
     .replace(/clear\(\)/g, "global.clear()")
-    .replace(/exit\(\)/g, "global.exit()")
+    .replace(/exit\(/g, "global.exit(")
     .replace(/sleep\(/g, "await global.sleep(")
-    .replace(/'/g, "\\'")
     .replace(/`/g, "\\`")
     .trim();
+  var functionArray = [];
   const blocks = data
     .replace(/>(?=.*?\{)/g, "><token:devider>")
     .replace(/}/g, "<token:x2775><token:devider>")
+    .replace(
+      /function\s([\w\d\$\_])+\([\w\d\$\_\s{},\[\]]*\)\s?{/g,
+      function (match) {
+        functionArray.push(match);
+        return "<token:devider><token:f" + (functionArray.length - 1);
+      }
+    )
     .replace(/{/g, "<token:x2774><token:devider>")
     .split("<token:devider>")
     .filter((e) => e);
   let returncode = "";
   for (let i = 0; i < blocks.length; i++) {
     //console.log(blocks[i]);
-    var functionArray = [];
-    let block = blocks[i].replace(/\([\w]+\)\(.*?\);/g, function (match) {
-      functionArray.push(match.replace(/\(/, "").replace(/\)/, ""));
-      return "";
-    });
-    returncode += functionArray.join(";") + compiler(block);
+    returncode += compiler(blocks[i]);
   }
   function compiler(data) {
     let len = 1,
@@ -163,22 +165,21 @@ function main(data) {
         line = a[0] + "=" + a[1] + "%" + a[0] + ";";
       }
       line = line
-        .replace(/dt/, "new global.date")
-        .replace(/input/g, "await global.input")
-        .replace(/print/g, "global.printf")
-        .replace(/json/g, "global.json")
-        .replace(/error/g, "global.error")
-        .replace(/Object/g, "global.object")
-        .replace(/Array/g, "global.array")
-        .replace(/String/g, "global.string")
-        .replace(/Number/g, "global.number")
-        .replace(/Boolean/g, "global.boolean")
-        .replace(/Func/g, "global.Func")
-        .replace(/velc/g, "const")
-        .replace(/velt/g, "let")
-        .replace(/num/g, "global.num")
-        .replace(/str/g, "global.str")
-        .replace(/eval\(/g, "main(")
+        .replace(/dt\(/, "new global.date(")
+        .replace(/jrin\(/g, "await global.jrin(")
+        .replace(/jro\(/g, "global.jro(")
+        .replace(/json\./g, "global.json.")
+        .replace(/(?<!\w\$\_)exclude\s/g, "delete ")
+        .replace(/(?<!\w\$\_)error(?!\w\d\$\_)/g, " global.error")
+        .replace(/(?<!\w\$\_)String(?!\w\d\$\_)/g, " global.string")
+        .replace(/(?<!\w\$\_)Number(?!\w\d\$\_)/g, " global.number")
+        .replace(/(?<!\w\$\_)Boolean(?!\w\d\$\_)/g, " global.boolean")
+        .replace(/(?<!\w\$\_)Func(?!\w\d\$\_)\(/g, " global.Func(")
+        .replace(/(?<!\w\$\_)velc(?!\w\d\$\_)\s/g, "const ")
+        .replace(/(?!\w\$\_)velt(?!\w\d\$\_)\s/g, "let ")
+        .replace(/(?<!\w\$\_)num(?!\w\d\$\_)\(/g, " global.num(")
+        .replace(/(?<!\w\$\_)str(?!\w\d\$\_)\(/g, " global.str(")
+        .replace(/(?<!\w\$\_)eval(?!\w\d\$\_)\(/g, "evaluate(")
         .replace(/[\d\w]+\s?\^\s?[\d\w]+/g, (match) => {
           return "global.XOR(" + match.replace(/\s?\^\s?/, ",") + ")";
         })
@@ -240,6 +241,7 @@ function main(data) {
     }
     return code;
   }
+  //console.log(returncode);
   //fs.writeFileSync("index.js", returncode, "utf8");
   returncode = returncode.replace(/<token:s\d+/g, function (match) {
     let sindex = parseInt(match.replace(/<token:s/, ""));
@@ -250,9 +252,8 @@ function main(data) {
   return "(async function () {" + header + returncode + "})()";
 
   function getIncludes(data) {
-    console.log(data);
     return data
-      .replace(/#include\<[\w\d\,]+\>/g, function (match) {
+      .replace(/#include\s?\<[\w\d\,]+\>/g, function (match) {
         let sname = match.replace(/#include\<|\>/g, "");
         if (sname == "global") {
           global.date = Date;
@@ -276,7 +277,7 @@ function main(data) {
             };
           }
           if (sname.includes("math")) {
-            header += 'let math = (await import("./math_laibrary.js")).math;';
+            header += 'let math = await import("./math_laibrary.js");';
           } else if (sname.includes("num")) {
             addNumProto();
           } else {
@@ -309,9 +310,9 @@ function main(data) {
         Error = undefined;
         return "";
       })
-      .replace(/#include\<\"\w+\"\>/g, (match) => {
-        let sname = match.split('"')[1];
-        return "const " + sname + ' = await import("./' + sname + '.js");';
+      .replace(/#include\s<"[\w\d]+"\|[\w\d]+?>/g, (match) => {
+        let sname = match.replace(/#include<"|"|>/g, "").split("|");
+        return "const " + sname[1] + " = await import('" + sname[0] + "');";
       });
   }
   function addNumProto() {

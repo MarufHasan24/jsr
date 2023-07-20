@@ -247,7 +247,56 @@ function MATH() {
       throw "radian should be a number in tanh function";
     }
   };
+  local.sech = function (radian = 0) {
+    let d = typeof radian === "number" ? radian : false;
+    if (d !== false) {
+      return 1 / local.cosh(d);
+    } else {
+      throw "radian should be a number in sech function";
+    }
+  };
+  local.cosech = function (radian = 0) {
+    let d = typeof radian === "number" ? radian : false;
+    if (d !== false) {
+      return 1 / local.sinh(d);
+    } else {
+      throw "radian should be a number in cosech function";
+    }
+  };
+  local.coth = function (radian = 0) {
+    let d = typeof radian === "number" ? radian : false;
+    if (d !== false) {
+      return 1 / local.tanh(d);
+    } else {
+      throw "radian should be a number in coth function";
+    }
+  };
+  local.acosec = function (ratio = 0) {
+    let r = typeof ratio === "number" ? ratio : false;
+    if (r !== false) {
+      return Math.asin(1 / r);
+    } else {
+      throw "ratio should be a number in acosec function";
+    }
+  };
+  local.asec = function (ratio = 0) {
+    let r = typeof ratio === "number" ? ratio : false;
+    if (r !== false) {
+      return Math.acos(1 / r);
+    } else {
+      throw "ratio should be a number in asec function";
+    }
+  };
+  local.acot = function (ratio = 0) {
+    let r = typeof ratio === "number" ? ratio : false;
+    if (r !== false) {
+      if (r === 0) return Math.PI / 2;
+      else return Math.atan(1 / r);
+    } else {
+      throw "ratio should be a number in acot function";
+    }
+  };
+  Math = undefined;
   return local;
 }
-const math = MATH();
-export { math };
+export const math = MATH();
