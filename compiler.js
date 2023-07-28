@@ -1,86 +1,63 @@
+// Purpose: Compiler for the JSR programming language
 const cnsl = cons;
 const inp = inputdiv;
 const head = scriptm;
 function main(data) {
-  const _name = { JSON, Number, String, Error };
   var std = false;
-  globalThis.global = {
-    jro: function (...args) {
-      var text = "";
-      for (var i = 0; i < args.length; i++) {
-        var arg = args[i];
-        text += _name.JSON.stringify(arg, function (key, value) {
-          if (typeof value == "function") {
-            return "f " + key + "() {[code]}";
-          } else {
-            return value;
-          }
+  let global = {
+    jro: function (...n) {
+      let e = "";
+      for (let t = 0; t < n.length; t++) {
+        let r = n[t];
+        e += JSON.stringify(r, function (n, e) {
+          return "function" == typeof e ? "f " + n + "() {[code]}" : e;
         }).replace(/"/g, "");
       }
-      cnsl.innerHTML += "$ " + text + "\n";
+      cnsl.innerHTML += "$ " + e + "\n";
     },
-    jrin: function (qustion) {
-      return new Promise((resolve, reject) => {
-        inp.innerHTML = "";
-        inp.innerHTML =
-          '<div style="color: #fff;">' +
-          qustion +
-          '</div><input type="text" name="prompt" id="prompttxt" spellcheck="true" autocomplete="off">';
-        let prompttxt = document.getElementById("prompttxt");
-        prompttxt.innerHTML = "";
-        prompttxt.focus();
-        prompttxt.addEventListener("keyup", (e) => {
-          if (e.key == "Enter") {
-            resolve(prompttxt.value);
-            inp.innerHTML = "";
-          } else if (e.key == "Escape") {
-            reject();
-            inp.innerHTML = "";
-          }
-        });
+    jrin: function (n) {
+      return new Promise((e, t) => {
+        (inp.innerHTML = ""),
+          (inp.innerHTML =
+            '<div style="color: #fff;">' +
+            n +
+            '</div><input type="text" name="prompt" id="prompttxt" spellcheck="true" autocomplete="off">');
+        let r = document.getElementById("prompttxt");
+        (r.innerHTML = ""),
+          r.focus(),
+          r.addEventListener("keyup", (n) => {
+            "Enter" == n.key
+              ? (e(r.value), (inp.innerHTML = ""))
+              : "Escape" == n.key && (t(), (inp.innerHTML = ""));
+          });
       });
     },
     clear: function () {
       cnsl.innerHTML = "";
     },
-    exit: function (num) {
-      cnsl.innerHTML += "$_";
-      throw new _name.Error("Exit code " + num ? num : 0);
+    exit: function (n) {
+      throw ((cnsl.innerHTML += "$_"), new Error(n));
     },
-    sleep: function (ms) {
-      return new Promise((resolve) => setTimeout(resolve, ms));
+    sleep: function (n) {
+      return new Promise((e) => setTimeout(e, n));
     },
-    num(str) {
-      return _name.Number(str);
+    num: (n) => Number(n),
+    str: (n) => String(n),
+    abs: (n) => (n < 0 ? -n : n),
+    fact: function (n) {
+      return 0 == n ? 1 : n * this.fact(n - 1);
     },
-    str(num) {
-      return _name.String(num);
+    XOR: function (n, e) {
+      return (!n && e) || (n && !e);
     },
-    abs(num) {
-      if (num < 0) {
-        return -num;
-      } else {
-        return num;
-      }
+    XNOR: function (n, e) {
+      return (!n && !e) || (n && e);
     },
-    fact: function (num) {
-      if (num == 0) {
-        return 1;
-      } else {
-        return num * this.fact(num - 1);
-      }
+    NOR: function (n, e) {
+      return !(n || e);
     },
-    XOR: function (a, b) {
-      return (!a && b) || (a && !b);
-    },
-    XNOR: function (a, b) {
-      return (!a && !b) || (a && b);
-    },
-    NOR: function (a, b) {
-      return !(a || b);
-    },
-    NAND: function (a, b) {
-      return !(a && b);
+    NAND: function (n, e) {
+      return !(n && e);
     },
   };
   var header = "";
@@ -121,14 +98,13 @@ function main(data) {
   function compiler(data) {
     let len = 1,
       regex = /\w+\s*\w*\(?.*\)?\{/g,
-      objregex = /(velc|velt)\s+\w+\s+=\s*{(\w+:.*,?)*}/g;
-    let jsmatch = data.match(/^(var|let|const)\s+/g);
-    if (jsmatch) {
-      throw new Error("SyntaxError: Unexpected token '" + jsmatch + "'");
-    }
-    data = data.replace(/(var|let|const|main)/g, function (match) {
-      return "_" + match;
-    });
+      objregex = /velc|velt)\s+\w+\s+=\s*{(\w+:.*,?)*}/g;
+    data = data.replace(
+      /?<![\w\d\$_])(var|let|const|main|(D|d)ocument|(W|w)indow|JSON|String|Boolean|Number|(D|d)ate|globalThis|navigator|localStorage|atob|btoa|crypto)(?![\w\d\$_])/g,
+      function (match) {
+        return "_" + match;
+      }
+    );
     let lines = "";
     if (data.includes("#include")) {
       data = getIncludes(data);
@@ -166,25 +142,25 @@ function main(data) {
       }
       line = line
         .replace(/dt\(/, "new global.date(")
-        .replace(/jrin\(/g, "await global.jrin(")
-        .replace(/jro\(/g, "global.jro(")
-        .replace(/json\./g, "global.json.")
-        .replace(/(?<!\w\$\_)exclude\s/g, "delete ")
-        .replace(/(?<!\w\$\_)error(?!\w\d\$\_)/g, " global.error")
-        .replace(/(?<!\w\$\_)String(?!\w\d\$\_)/g, " global.string")
-        .replace(/(?<!\w\$\_)Number(?!\w\d\$\_)/g, " global.number")
-        .replace(/(?<!\w\$\_)Boolean(?!\w\d\$\_)/g, " global.boolean")
-        .replace(/(?<!\w\$\_)Func(?!\w\d\$\_)\(/g, " global.Func(")
-        .replace(/(?<!\w\$\_)velc(?!\w\d\$\_)\s/g, "const ")
-        .replace(/(?!\w\$\_)velt(?!\w\d\$\_)\s/g, "let ")
-        .replace(/(?<!\w\$\_)num(?!\w\d\$\_)\(/g, " global.num(")
-        .replace(/(?<!\w\$\_)str(?!\w\d\$\_)\(/g, " global.str(")
-        .replace(/(?<!\w\$\_)eval(?!\w\d\$\_)\(/g, "evaluate(")
-        .replace(/[\d\w]+\s?\^\s?[\d\w]+/g, (match) => {
-          return "global.XOR(" + match.replace(/\s?\^\s?/, ",") + ")";
+        .replace(/(?<![\w\$\_\d\.])jrin\(/g, "await global.jrin(")
+        .replace(/(?<![\w\$\_\d\.])jro\(/g, "global.jro(")
+        .replace(/(?<![\w\$\_\d\.])json\./g, "global.json.")
+        .replace(/(?<![\w\$\_\d\.])exclude\s/g, "delete ")
+        .replace(/(?<![\w\$\_\d\.])error(?![\w\d\$\_])/g, " global.error")
+        .replace(/(?<![\w\$\_\d\.])String(?![\w\d\$\_])/g, " global.string")
+        .replace(/(?<![\w\$\_\d\.])Number(?![\w\d\$\_])/g, " global.number")
+        .replace(/(?<![\w\$\_\d\.])Boolean(?![\w\d\$\_])/g, " global.boolean")
+        .replace(/(?<![\w\$\_\d\.])Func(?![\w\d\$\_])\(/g, " global.Func(")
+        .replace(/(?<![\w\$\_\d\.])velc(?![\w\d\$\_])\s/g, "const ")
+        .replace(/(?<![\w\$\_\d\.])velt(?![\w\d\$\_])\s/g, "let ")
+        .replace(/(?<![\w\$\_\d\.])num(?![\w\d\$\_])\(/g, " global.num(")
+        .replace(/(?<![\w\$\_\d\.])str(?![\w\d\$\_])\(/g, " global.str(")
+        .replace(/(?<![\w\$\_\d\.])eval(?![\w\d\$\_])\(/g, "evaluate(")
+        .replace(/[\d\w]+\s?\\s?[\d\w]+/g, (match) => {
+          return "global.XOR(" + match.replace(/\s?\\s?/, ",") + ")";
         })
-        .replace(/[\d\w]+\s?\!\^\s?[\d\w]+/g, (match) => {
-          return "global.XNOR(" + match.replace(/\s?\!\^\s?/, ",") + ")";
+        .replace(/[\d\w]+\s?\!\\s?[\d\w]+/g, (match) => {
+          return "global.XNOR(" + match.replace(/\s?\!\\s?/, ",") + ")";
         })
         .replace(/[\d\w]+\s?\!\|\s?[\d\w]+/g, (match) => {
           return "global.NOR(" + match.replace(/\s?\!\|\s?/, ",") + ")";
@@ -255,21 +231,20 @@ function main(data) {
     return data
       .replace(/#include\s?\<[\w\d\,]+\>/g, function (match) {
         let sname = match.replace(/#include\<|\>/g, "");
-        if (sname == "global") {
-          global.date = Date;
-          global.math = Math;
-          global.json = JSON;
+        if (sname == "all") {
+          header += `global.json = JSON; global.date = Date; global.error = function (...args) { throw new Error(...args); }; let math = await import('./math_laibrary.js'); let _crypto = await import('./crypto_laibrary.js'); let fs = await import('./browser/fs.js'); let request = await import('./browser/req.js'); let cmd = await import('./browser/cmd.js');`;
           global.error = function (...args) {
             throw new Error(...args);
           };
+          std = true;
+          globalThis.global = global;
         } else {
-          if (!sname.includes("std") || std) {
-            throw "started without std";
-          } else {
+          if (sname.includes("std") && !std) {
             std = true;
+            globalThis.global = global;
           }
           if (sname.includes("json")) {
-            global.json = JSON;
+            header += "global.json = JSON;";
           }
           if (sname.includes("error")) {
             global.error = function (...args) {
@@ -280,22 +255,15 @@ function main(data) {
             header += 'let math = await import("./math_laibrary.js");';
           } else if (sname.includes("num")) {
             addNumProto();
-          } else {
-            Number = undefined;
           }
           if (sname.includes("date")) {
-            global.date = Date;
+            header += "global.date = Date; Date = undefined;";
           }
           if (sname.includes("arr")) {
             addArrProto();
           }
-          if (!sname.includes("str")) {
-            String = undefined;
-          } else {
-            addStrProto();
-          }
-          if (!sname.includes("bool")) {
-            Boolean = undefined;
+          if (sname.includes("str")) {
+            addArrProto();
           }
           if (sname.includes("func")) {
             global.Func = Function;
@@ -304,10 +272,6 @@ function main(data) {
             RegExp = undefined;
           }
         }
-        JSON = undefined;
-        //Math = undefined;
-        Date = undefined;
-        Error = undefined;
         return "";
       })
       .replace(/#include\s<"[\w\d]+"\|[\w\d]+?>/g, (match) => {
@@ -316,10 +280,10 @@ function main(data) {
       });
   }
   function addNumProto() {
-    Number.__proto__.odd = function () {
+    Number.__proto__.isOdd = function () {
       return this % 2 !== 0;
     };
-    Number.__proto__.prime = function () {
+    Number.__proto__.isPrime = function () {
       if (this > 0) {
         if (this === 2) {
           return true;
@@ -441,9 +405,12 @@ function run() {
           ? e.message
               ?.replace(/import/g, "include")
               .replace(/global\./g, "")
-              ?.replace(/_(var|let|const|main)/g, function (match) {
-                return match.replace("_", "");
-              })
+              ?.replace(
+                /_(var|let|const|main|(D|d)ocument|(W|w)indow|JSON|String|Boolean|Number|(D|d)ate|globalThis|navigator|localStorage|atob|btoa|crypto)/g,
+                function (match) {
+                  return match.replace("_", "");
+                }
+              )
           : e;
       cons.innerHTML += !msg.includes("Exit code ") ? "\nError >" + msg : msg;
     });
