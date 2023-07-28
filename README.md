@@ -69,17 +69,26 @@ It has all the operators that JavaScript has. I'm not going to list them all her
 
 ### standard library
 
-The standard library is a collection of functions that are used in jsr. It is included using the `#include <std>` statement. Without it, the code will not run.
+The standard library is a collection of functions that are used in jsr. It is included using the `#include <std>` statement. Without it, the code will not run. It has the following functions:
+
+- `jro(...arg)` - takes one or more arguments and prints them to the console
+- `jrin(qustion)` - takes a question as an string and returns the answer
+- `clear()` - clears the console
+- `exit()` - exits the program
+- `sleep(ms)` - sleeps the program for the given amount of milliseconds
+- `num(str)` - converts a string to a number if it is numeric or returns `NaN`
+- `str(num)` - converts a number to a string
+  and so on...
 
 ### other libraries
 
 - `#include <math>` - includes the math library. It has all the math functions that are in JavaScript. Moreover it has more than 20 extra functions like `sec` , `cosec`, `cot`, `logx`, `mean`, `rootx` etc.
 - `#include <arr>` - includes the array library. It has all the array functions that are in JavaScript. Moreover it has some extra features like `mean`, `sum`, `range`, `GCD` etc.
-- `#include <obj>` - includes the object library
-- `#include <date>` - includes the date library
-- `#include <bool>` - includes the boolean library
-- `#include <num>` - includes the number library
-- `#include <func>` - includes the Func library, which can interprate js code in jsr
+- `#include <obj>` - includes the object library.
+- `#include <date>` - includes the date library. It has all the date functions that are in JavaScript.
+- `#include <bool>` - includes the boolean library. It has all the boolean functions that are in JavaScript.
+- `#include <num>` - includes the number library. It has all the number functions that are in JavaScript. Moreover it has some extra features like `isPrime`,`fact`,`isOdd` etc.
+- `#include <func>` - includes the Func library, which can interprate javascript code in jsr
 - `#include <str>` - includes the string library
 - `#include <reg>` - includes the regex library
 - `#include <error>` - includes the error library
