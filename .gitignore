@@ -1,7 +1,0 @@
-std.js
-.gitignore
-compiler.js
-.vscode/settings.json
-index.jsr
-index.js
-math_laibrary.max.js
