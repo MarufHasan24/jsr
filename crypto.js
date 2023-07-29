@@ -1,98 +1,125 @@
-function cid(text) {
-  const length = text.length;
-  let result = "";
-  const keys = [
-    "UUU",
-    "UUC",
-    "UUA",
-    "UUG",
-    "CUU",
-    "CUC",
-    "CUA",
-    "CUG",
-    "AUU",
-    "AUC",
-    "AUA",
-    "GUU",
-    "GUC",
-    "GUA",
-    "GUG",
-    "UCU",
-    "UCC",
-    "UCA",
-    "UCG",
-    "CCU",
-    "CCC",
-    "CCA",
-    "CCG",
-    "ACU",
-    "ACC",
-    "ACA",
-    "ACG",
-    "GCU",
-    "GCC",
-    "GCA",
-    "GCG",
-    "UAU",
-    "UAC",
-    "CAU",
-    "CAC",
-    "CAA",
-    "CAG",
-    "AAU",
-    "AAC",
-    "AAA",
-    "AAG",
-    "GAU",
-    "GAC",
-    "GAA",
-    "GAG",
-    "UGU",
-    "UGC",
-    "UGG",
-    "CGU",
-    "CGC",
-    "CGA",
-    "CGG",
-    "AGU",
-    "AGC",
-    "AGA",
-    "AGG",
-    "GGU",
-    "GGC",
-    "GGA",
-    "GGG",
-  ];
-  text = binarytopre(text);
-}
-console.clear();
-console.log(binarytopre("hello world!"));
-function binarytopre(text) {
+function binarytopre(text, range = 1.96e4) {
   let result = "";
   for (let i = 0; i < text.length; i++) {
     result += text.charCodeAt(i).toString(2).padStart(8, "0");
   }
   let binary = result;
   result = "";
-  const rand = /* Math.floor(Math.random() * 58); */ 5e8;
+  range = range >= 5.3e7 || range <= 1 ? 1.96e4 : range;
+  range--;
+  const rand = Math.floor(1 + Math.random() * range);
   binary =
     binary.substring(0, binary.length - (binary.length % rand)) +
     binary
       .substring(binary.length - (binary.length % rand))
       .padStart(rand, "0");
+  let raw = [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z",
+    "A",
+    "B",
+    "D",
+    "E",
+    "F",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+    "!",
+    "@",
+    "#",
+    "$",
+    "%",
+    "^",
+    "&",
+    "*",
+    "(",
+    ")",
+    "_",
+    "+",
+    "-",
+    "=",
+    "[",
+    "]",
+    "{",
+    "}",
+    ";",
+    ":",
+    "'",
+    "<",
+    ">",
+    ".",
+    "/",
+    "?",
+    "|",
+    "~",
+    "`",
+  ];
+  raw = raw.slice(0, rand);
+  console.log(raw, rand);
   for (let i = 0; i < binary.length; i += rand) {
     let lr = binary.slice(i, i + rand);
     lr = parseInt(lr, 2);
     let num = "";
     do {
-      num = " " + (lr % rand) + num;
+      num = (lr % rand) + num;
       lr = Math.floor(lr / rand);
+      for (let r = raw.length - 1; r >= 0; r--) {
+        num = num.replace(r, raw[r]);
+      }
     } while (lr);
-    result += num + ",";
+
+    result += num;
   }
   return [result, rand];
 }
-
 function patri(arr, key) {
   var temp = [...arr];
   if (key > arr.length) {
@@ -107,6 +134,4 @@ function patri(arr, key) {
   });
   return temp;
 }
-
-function replacer() {}
-536870888;
+binarytopre("Hello World", 30);

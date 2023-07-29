@@ -5,3 +5,4 @@ compiler.js
 index.jsr
 index.js
 math_laibrary.max.js
+node_modules/*

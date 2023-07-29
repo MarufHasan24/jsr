@@ -20,17 +20,7 @@ function main(data) {
               str += "{'" + temp[i][0] + "' => " + temp[i][1] + "},";
             }
             return str + "}";
-          } else if (
-            (typeof value == "function" && typeof value !== "function") ||
-            value.toString().indexOf("class") === -1
-          ) {
-            return "f " + key + "() {[code]}";
-          } else if (
-            !(
-              typeof value !== "function" ||
-              value.toString().indexOf("class") === -1
-            )
-          ) {
+          } else if (value.toString().indexOf("class") !== -1) {
             if (key.trim()) {
               key = " " + key.trim()[0].toUpperCase() + key.trim().slice(1);
             } else {
@@ -44,6 +34,8 @@ function main(data) {
               value.name +
               "{[native code]}"
             );
+          } else if (typeof value == "function") {
+            return "f " + key + "() {[code]}";
           } else {
             return value;
           }
@@ -120,6 +112,13 @@ function main(data) {
     NAND: function (a, b) {
       return !(a && b);
     },
+    getch: function () {
+      return new Promise((resolve) => {
+        document.addEventListener("keydown", (e) => {
+          resolve(e.key);
+        });
+      });
+    },
   };
   var header = "";
   var strtingArray = [],
@@ -182,12 +181,44 @@ function main(data) {
   let returncode = "";
   for (let i = 0; i < blocks.length; i++) {
     //console.log(blocks[i]);
-    returncode += compiler(blocks[i]);
+    returncode += compiler(blocks[i])
+      .replace(/dt\(/, "new global.date(")
+      .replace(/(?<![\w\$\_\d\.])jrin\(/g, "await global.jrin(")
+      .replace(/(?<![\w\$\_\d\.])jro\(/g, "global.jro(")
+      .replace(/(?<![\w\$\_\d\.])json\./g, "global.json.")
+      .replace(/(?<![\w\$\_\d\.])exclude\s/g, "delete ")
+      .replace(/(?<![\w\$\_\d\.])error(?![\w\d\$\_])/g, " global.error")
+      .replace(/(?<![\w\$\_\d\.])String(?![\w\d\$\_])/g, " global.string")
+      .replace(/(?<![\w\$\_\d\.])Number(?![\w\d\$\_])/g, " global.number")
+      .replace(/(?<![\w\$\_\d\.])Boolean(?![\w\d\$\_])/g, " global.boolean")
+      .replace(/(?<![\w\$\_\d\.])Func(?![\w\d\$\_])\(/g, " global.Func(")
+      .replace(/(?<![\w\$\_\d\.])velc(?![\w\d\$\_])\s/g, "const ")
+      .replace(/(?<![\w\$\_\d\.])velt(?![\w\d\$\_])\s/g, "let ")
+      .replace(/(?<![\w\$\_\d\.])num(?![\w\d\$\_])\(/g, " global.num(")
+      .replace(/(?<![\w\$\_\d\.])str(?![\w\d\$\_])\(/g, " global.str(")
+      .replace(/[\d\w]+\s?\\s?[\d\w]+/g, (match) => {
+        return "global.XOR(" + match.replace(/\s?\\s?/, ",") + ")";
+      })
+      .replace(/[\d\w]+\s?\!\\s?[\d\w]+/g, (match) => {
+        return "global.XNOR(" + match.replace(/\s?\!\\s?/, ",") + ")";
+      })
+      .replace(/[\d\w]+\s?\!\|\s?[\d\w]+/g, (match) => {
+        return "global.NOR(" + match.replace(/\s?\!\|\s?/, ",") + ")";
+      })
+      .replace(/[\d\w]+\s?\!\&\s?[\d\w]+/g, (match) => {
+        return "global.NAND(" + match.replace(/\s?\!\&\s?/, ",") + ")";
+      })
+      .replace(/\|[+-\d\w]+\|/g, function (match) {
+        return "global.abs(" + match.replace(/\|/g, "") + ")";
+      })
+      .replace(/[\d\w]+!/, function (match) {
+        return "global.fact(" + match.replace(/!/, "") + ")";
+      });
   }
   function compiler(data) {
     let len = 1;
     data = data.replace(
-      /(?<![\w\d\$_])(var|let|const|main|(D|d)ocument|(W|w)indow|JSON|String|Boolean|Number|(D|d)ate|globalThis|navigator|localStorage|atob|btoa|this)(?![\w\d\$_])/g,
+      /(?<![\w\d\$_])(var|let|const|main|(D|d)ocument|(W|w)indow|JSON|String|Boolean|Number|(D|d)ate|globalThis|navigator|localStorage|atob|btoa|this|console)(?![\w\d\$_])/g,
       function (match) {
         return "_" + match;
       }
@@ -227,40 +258,7 @@ function main(data) {
         let a = line.replace(/;/g, "").split("=%");
         line = a[0] + "=" + a[1] + "%" + a[0] + ";";
       }
-      line = line
-        .replace(/dt\(/, "new global.date(")
-        .replace(/(?<![\w\$\_\d\.])jrin\(/g, "await global.jrin(")
-        .replace(/(?<![\w\$\_\d\.])jro\(/g, "global.jro(")
-        .replace(/(?<![\w\$\_\d\.])json\./g, "global.json.")
-        .replace(/(?<![\w\$\_\d\.])exclude\s/g, "delete ")
-        .replace(/(?<![\w\$\_\d\.])error(?![\w\d\$\_])/g, " global.error")
-        .replace(/(?<![\w\$\_\d\.])String(?![\w\d\$\_])/g, " global.string")
-        .replace(/(?<![\w\$\_\d\.])Number(?![\w\d\$\_])/g, " global.number")
-        .replace(/(?<![\w\$\_\d\.])Boolean(?![\w\d\$\_])/g, " global.boolean")
-        .replace(/(?<![\w\$\_\d\.])Func(?![\w\d\$\_])\(/g, " global.Func(")
-        .replace(/(?<![\w\$\_\d\.])velc(?![\w\d\$\_])\s/g, "const ")
-        .replace(/(?<![\w\$\_\d\.])velt(?![\w\d\$\_])\s/g, "let ")
-        .replace(/(?<![\w\$\_\d\.])num(?![\w\d\$\_])\(/g, " global.num(")
-        .replace(/(?<![\w\$\_\d\.])str(?![\w\d\$\_])\(/g, " global.str(")
-        .replace(/[\d\w]+\s?\\s?[\d\w]+/g, (match) => {
-          return "global.XOR(" + match.replace(/\s?\\s?/, ",") + ")";
-        })
-        .replace(/[\d\w]+\s?\!\\s?[\d\w]+/g, (match) => {
-          return "global.XNOR(" + match.replace(/\s?\!\\s?/, ",") + ")";
-        })
-        .replace(/[\d\w]+\s?\!\|\s?[\d\w]+/g, (match) => {
-          return "global.NOR(" + match.replace(/\s?\!\|\s?/, ",") + ")";
-        })
-        .replace(/[\d\w]+\s?\!\&\s?[\d\w]+/g, (match) => {
-          return "global.NAND(" + match.replace(/\s?\!\&\s?/, ",") + ")";
-        })
-        .replace(/\|[+-\d\w]+\|/g, function (match) {
-          return "global.abs(" + match.replace(/\|/g, "") + ")";
-        })
-        .replace(/[\d\w]+!/, function (match) {
-          return "global.fact(" + match.replace(/!/, "") + ")";
-        })
-        .replace(/(?<=for\(.+),/g, ";");
+      line = line.replace(/(?<=for\(.+),/g, ";");
       if (line === ";") {
         semiclone = ";";
       }
@@ -287,30 +285,32 @@ function main(data) {
   }
   //console.log(returncode);
   //fs.writeFileSync("index.js", returncode, "utf8");
-  returncode = returncode.replace(/<token:s\d+/g, function (match) {
-    let sindex = parseInt(match.replace(/<token:s/, ""));
-    return strtingArray[sindex];
-  });
-  returncode = returncode.replace(/<token:obj\d+/g, function (match) {
-    let sindex = parseInt(match.replace(/<token:obj/, ""));
-    return objArray[sindex];
-  });
-  returncode = returncode.replace(/<token:set\d+/g, function (match) {
-    let sindex = parseInt(match.replace(/<token:set/, ""));
-    return setArray[sindex];
-  });
+  returncode = returncode
+    .replace(/<token:s\d+/g, function (match) {
+      let sindex = parseInt(match.replace(/<token:s/, ""));
+      return strtingArray[sindex];
+    })
+    .replace(/<token:obj\d+/g, function (match) {
+      let sindex = parseInt(match.replace(/<token:obj/, ""));
+      return objArray[sindex];
+    })
+    .replace(/<token:set\d+/g, function (match) {
+      let sindex = parseInt(match.replace(/<token:set/, ""));
+      return setArray[sindex];
+    })
+    .replace(
+      /class\s([\w\d\$\_])+\([\w\d\$\_\s,\[\]]*\){.*?(};)/g,
+      function (match) {
+        let temp = match.replace(/class\s([\w\d\$\_])+/, "");
+        let temp2 = match.replace(temp, "");
+        return temp2 + "{constructor" + temp + "};";
+      }
+    )
+    .replace(/@(?=[\w\d\$_])/g, "this.")
+    .replace(/@/g, "this");
   strtingArray = undefined;
   objArray = undefined;
   setArray = undefined;
-  returncode = returncode.replace(
-    /class\s([\w\d\$\_])+\([\w\d\$\_\s,\[\]]*\)\s?{[^;]*};/g,
-    function (match) {
-      let temp = match.replace(/class\s([\w\d\$\_])+/, "");
-      let temp2 = match.replace(temp, "");
-      return temp2 + "{constructor" + temp.replace(",", ";") + "};";
-    }
-  );
-  returncode = returncode.replace(/@/g, "this.");
   console.log("result : ", header + returncode);
   return "(async function () {" + header + returncode + "})()";
   function getIncludes(data) {
@@ -472,18 +472,17 @@ function run() {
   var ap = async () => {
     return await new Promise((resolve, reject) => {
       try {
-        console.time("Execution time");
-        resolve(eval(main(ide.value)));
-        console.timeEnd("Execution time");
+        let code = fs.readFileSync("index.fg", "utf8");
+        console.time("compilation time");
+        resolve(eval(code));
+        console.timeEnd("compilation time");
       } catch (e) {
-        reject(e);
+        global.jro("Error > " + e.message);
       }
     });
   };
   ap()
-    .then((res) => {
-      //console.log(res);
-    })
+    .then()
     .catch((e) => {
       console.log(e);
       let msg =
@@ -498,6 +497,61 @@ function run() {
                 }
               )
           : e;
-      cons.innerHTML += !msg.includes("Exit code ") ? "\nError >" + msg : msg;
+      cons.innerHTML += !msg.includes("Exit code ") ? "\n$Error >" + msg : msg;
     });
 }
+class refer {
+  #obj = [];
+  constructor() {
+    this.name = "Refer";
+  }
+  add(name, value) {
+    this.#obj.push([name, value]);
+    return this.#obj.length - 1;
+  }
+  get(name) {
+    if (typeof name === "string") {
+      for (let i = 0; i < this.#obj.length; i++) {
+        if (this.#obj[i][0] === name) {
+          return this.#obj[i][1];
+        }
+      }
+    } else if (typeof name === "number") {
+      return this.#obj[name][1];
+    } else {
+      throw "Require a string as name or index";
+    }
+  }
+  set(name, value) {
+    if (typeof name === "string") {
+      for (let i = 0; i < this.#obj.length; i++) {
+        if (this.#obj[i][0] === name) {
+          this.#obj[i][1] = value;
+        }
+      }
+    } else if (typeof name === "number") {
+      this.#obj[name][1] = value;
+    } else {
+      throw "Require a string as name or index";
+    }
+  }
+  remove(name) {
+    if (typeof name === "string") {
+      for (let i = 0; i < this.#obj.length; i++) {
+        if (this.#obj[i][0] === name) {
+          this.#obj.splice(i, 1);
+        }
+      }
+    } else if (typeof name === "number") {
+      this.#obj.splice(name, 1);
+    } else {
+      throw "Require a string as name or index";
+    }
+  }
+  exicute() {
+    for (let i = 0; i < this.#obj.length; i++) {
+      this.#obj[i][1]();
+    }
+  }
+}
+function pico(template, expressions, initilizations) {}
