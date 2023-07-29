@@ -5,72 +5,161 @@ const head = scriptm;
 function main(data) {
   var std = false;
   let global = {
-    jro: function (...n) {
-      let e = "";
-      for (let t = 0; t < n.length; t++) {
-        let r = n[t];
-        e += JSON.stringify(r, function (n, e) {
-          return "function" == typeof e ? "f " + n + "() {[code]}" : e;
+    jro: function (...args) {
+      var text = "";
+      for (var i = 0; i < args.length; i++) {
+        var arg = args[i];
+        text += JSON.stringify(arg, function (key, value) {
+          if (value instanceof Set) {
+            let temp = Array.from(value);
+            return "Set(" + temp.length + "){" + temp.toString() + "}";
+          } else if (value instanceof Map) {
+            let temp = Array.from(value),
+              str = "Map(" + temp.length / 2 + "){";
+            for (let i = 0; i < temp.length; i++) {
+              str += "{'" + temp[i][0] + "' => " + temp[i][1] + "},";
+            }
+            return str + "}";
+          } else if (
+            (typeof value == "function" && typeof value !== "function") ||
+            value.toString().indexOf("class") === -1
+          ) {
+            return "f " + key + "() {[code]}";
+          } else if (
+            !(
+              typeof value !== "function" ||
+              value.toString().indexOf("class") === -1
+            )
+          ) {
+            if (key.trim()) {
+              key = " " + key.trim()[0].toUpperCase() + key.trim().slice(1);
+            } else {
+              key = "";
+            }
+            return (
+              "constructor" +
+              key +
+              " : " +
+              "class " +
+              value.name +
+              "{[native code]}"
+            );
+          } else {
+            return value;
+          }
         }).replace(/"/g, "");
       }
-      cnsl.innerHTML += "$ " + e + "\n";
+      cnsl.innerHTML += "$ " + text + "\n";
     },
-    jrin: function (n) {
-      return new Promise((e, t) => {
-        (inp.innerHTML = ""),
-          (inp.innerHTML =
-            '<div style="color: #fff;">' +
-            n +
-            '</div><input type="text" name="prompt" id="prompttxt" spellcheck="true" autocomplete="off">');
-        let r = document.getElementById("prompttxt");
-        (r.innerHTML = ""),
-          r.focus(),
-          r.addEventListener("keyup", (n) => {
-            "Enter" == n.key
-              ? (e(r.value), (inp.innerHTML = ""))
-              : "Escape" == n.key && (t(), (inp.innerHTML = ""));
-          });
+    jrin: function (qustion) {
+      return new Promise((resolve, reject) => {
+        inp.innerHTML = "";
+        inp.innerHTML =
+          '<div style="color: #fff;">' +
+          qustion +
+          '</div><input type="text" name="prompt" id="prompttxt" spellcheck="true" autocomplete="off">';
+        let prompttxt = document.getElementById("prompttxt");
+        prompttxt.innerHTML = "";
+        prompttxt.focus();
+        prompttxt.addEventListener("keyup", (e) => {
+          if (e.key == "Enter") {
+            resolve(prompttxt.value);
+            inp.innerHTML = "";
+          } else if (e.key == "Escape") {
+            reject();
+            inp.innerHTML = "";
+          }
+        });
       });
     },
     clear: function () {
       cnsl.innerHTML = "";
     },
-    exit: function (n) {
-      throw ((cnsl.innerHTML += "$_"), new Error(n));
+    exit: function (num) {
+      cnsl.innerHTML += "$_";
+      throw new Error("Exit code " + num ? num : 0);
     },
-    sleep: function (n) {
-      return new Promise((e) => setTimeout(e, n));
+    sleep: function (ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
     },
-    num: (n) => Number(n),
-    str: (n) => String(n),
-    abs: (n) => (n < 0 ? -n : n),
-    fact: function (n) {
-      return 0 == n ? 1 : n * this.fact(n - 1);
+    num(str) {
+      return Number(str);
     },
-    XOR: function (n, e) {
-      return (!n && e) || (n && !e);
+    str(num) {
+      return String(num);
     },
-    XNOR: function (n, e) {
-      return (!n && !e) || (n && e);
+    abs(num) {
+      if (num < 0) {
+        return -num;
+      } else {
+        return num;
+      }
     },
-    NOR: function (n, e) {
-      return !(n || e);
+    fact: function (num) {
+      if (num == 0) {
+        return 1;
+      } else {
+        return num * this.fact(num - 1);
+      }
     },
-    NAND: function (n, e) {
-      return !(n && e);
+    XOR: function (a, b) {
+      let result = false;
+      if (typeof a == "number" && typeof b == "number") {
+        result = a * !b + !a * b;
+      } else {
+        result = (!a && b) || (a && !b);
+      }
+      return result;
+    },
+    XNOR: function (a, b) {
+      return (!a && !b) || (a && b);
+    },
+    NOR: function (a, b) {
+      return !(a || b);
+    },
+    NAND: function (a, b) {
+      return !(a && b);
     },
   };
   var header = "";
-  var strtingArray = [];
+  var strtingArray = [],
+    objArray = [],
+    setArray = [];
   var data = data
     .replace(/\/\/.+/g, "")
     .replace(/\n|\r/g, "")
     .replace(/\s+/g, " ")
     .replace(/'.*?'/g, "")
+    .replace(/(?<![\w\$\_\d\.])eval\(`[\s\S\n]+`\);/g, function (match) {
+      match = match.replace(/eval\(`/g, "").replace(/`\);?/g, "");
+      return "(async function () {" + match + "})()";
+    })
     .replace(/\"[\s\S]*?\"/g, function (match) {
       strtingArray.push(match);
       return "<token:s" + (strtingArray.length - 1);
     })
+    .replace(
+      /vel(c|t)\s[\w\d\$_]+\s?=\s?{([\w\d\$_"]:?[^\s],?)*};?/,
+      function (match) {
+        var temp = match.replace(/{([\w\d\$_"]:?[^\s],?)*};?/, "");
+        objArray.push(match.replace(temp, ""));
+        return temp + "<token:obj" + (objArray.length - 1) + ";";
+      }
+    )
+    .replace(
+      /vel(c|t)\s[\w\d\$_]+\s?=\s?{([\w\d\$_"]+\s?)*};?/,
+      function (match) {
+        var temp = match.replace(/{([\w\d\$_"]+\s?)*};?/, "");
+        setArray.push(
+          match
+            .replace(temp, "")
+            .replace(/\s/g, ",")
+            .replace(/{/g, "new Set([")
+            .replace(/};?/g, "])")
+        );
+        return temp + "<token:set" + (setArray.length - 1) + ";";
+      }
+    )
     .replace(/clear\(\)/g, "global.clear()")
     .replace(/exit\(/g, "global.exit(")
     .replace(/sleep\(/g, "await global.sleep(")
@@ -81,7 +170,7 @@ function main(data) {
     .replace(/>(?=.*?\{)/g, "><token:devider>")
     .replace(/}/g, "<token:x2775><token:devider>")
     .replace(
-      /function\s([\w\d\$\_])+\([\w\d\$\_\s{},\[\]]*\)\s?{/g,
+      /(function|class)\s([\w\d\$\_])+\([\w\d\$\_\s,\[\]]*\)\s?{/g,
       function (match) {
         functionArray.push(match);
         return "<token:devider><token:f" + (functionArray.length - 1);
@@ -96,11 +185,9 @@ function main(data) {
     returncode += compiler(blocks[i]);
   }
   function compiler(data) {
-    let len = 1,
-      regex = /\w+\s*\w*\(?.*\)?\{/g,
-      objregex = /velc|velt)\s+\w+\s+=\s*{(\w+:.*,?)*}/g;
+    let len = 1;
     data = data.replace(
-      /?<![\w\d\$_])(var|let|const|main|(D|d)ocument|(W|w)indow|JSON|String|Boolean|Number|(D|d)ate|globalThis|navigator|localStorage|atob|btoa|crypto)(?![\w\d\$_])/g,
+      /(?<![\w\d\$_])(var|let|const|main|(D|d)ocument|(W|w)indow|JSON|String|Boolean|Number|(D|d)ate|globalThis|navigator|localStorage|atob|btoa|this)(?![\w\d\$_])/g,
       function (match) {
         return "_" + match;
       }
@@ -155,7 +242,6 @@ function main(data) {
         .replace(/(?<![\w\$\_\d\.])velt(?![\w\d\$\_])\s/g, "let ")
         .replace(/(?<![\w\$\_\d\.])num(?![\w\d\$\_])\(/g, " global.num(")
         .replace(/(?<![\w\$\_\d\.])str(?![\w\d\$\_])\(/g, " global.str(")
-        .replace(/(?<![\w\$\_\d\.])eval(?![\w\d\$\_])\(/g, "evaluate(")
         .replace(/[\d\w]+\s?\\s?[\d\w]+/g, (match) => {
           return "global.XOR(" + match.replace(/\s?\\s?/, ",") + ")";
         })
@@ -182,24 +268,6 @@ function main(data) {
       //console.log([line]);
     }
     code = semiclone + code;
-    //console.log(regex.test(code), [code]);
-    if (regex.test(code) && !objregex.test(code)) {
-      let searchTxt = code.match(regex);
-      code = code.replace(regex, "");
-      for (i = 0; i < searchTxt.length; i++) {
-        code += searchTxt[i];
-      }
-    }
-    if (objregex.test(code)) {
-      let searchTxt = code.match(objregex);
-      let objstr = "";
-      for (i = 0; i < searchTxt.length; i++) {
-        objstr += searchTxt[i] + ";";
-      }
-      code = code.replace(objregex, "");
-      code = objstr + code;
-    }
-    //console.log("end", [code]);
     code = code.replace(/;+/g, ";");
     if (code.includes("<token:x2774>")) {
       code = code.replace("<token:x2774>", "") + "{";
@@ -223,10 +291,28 @@ function main(data) {
     let sindex = parseInt(match.replace(/<token:s/, ""));
     return strtingArray[sindex];
   });
+  returncode = returncode.replace(/<token:obj\d+/g, function (match) {
+    let sindex = parseInt(match.replace(/<token:obj/, ""));
+    return objArray[sindex];
+  });
+  returncode = returncode.replace(/<token:set\d+/g, function (match) {
+    let sindex = parseInt(match.replace(/<token:set/, ""));
+    return setArray[sindex];
+  });
   strtingArray = undefined;
-  console.log(header + returncode);
+  objArray = undefined;
+  setArray = undefined;
+  returncode = returncode.replace(
+    /class\s([\w\d\$\_])+\([\w\d\$\_\s,\[\]]*\)\s?{[^;]*};/g,
+    function (match) {
+      let temp = match.replace(/class\s([\w\d\$\_])+/, "");
+      let temp2 = match.replace(temp, "");
+      return temp2 + "{constructor" + temp.replace(",", ";") + "};";
+    }
+  );
+  returncode = returncode.replace(/@/g, "this.");
+  console.log("result : ", header + returncode);
   return "(async function () {" + header + returncode + "})()";
-
   function getIncludes(data) {
     return data
       .replace(/#include\s?\<[\w\d\,]+\>/g, function (match) {
@@ -406,7 +492,7 @@ function run() {
               ?.replace(/import/g, "include")
               .replace(/global\./g, "")
               ?.replace(
-                /_(var|let|const|main|(D|d)ocument|(W|w)indow|JSON|String|Boolean|Number|(D|d)ate|globalThis|navigator|localStorage|atob|btoa|crypto)/g,
+                /_(var|let|const|main|(D|d)ocument|(W|w)indow|JSON|String|Boolean|Number|(D|d)ate|globalThis|navigator|localStorage|atob|btoa|this)/g,
                 function (match) {
                   return match.replace("_", "");
                 }
