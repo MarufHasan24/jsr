@@ -549,9 +549,7 @@ class refer {
     }
   }
   exicute() {
-    for (let i = 0; i < this.#obj.length; i++) {
-      this.#obj[i][1]();
-    }
+    for (let i = 0; i < this.#obj.length; i++) {}
   }
 }
 function pico(template, expressions, initilizations) {}
