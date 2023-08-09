@@ -76,9 +76,10 @@ The standard library is a collection of functions that are used in jsr. It is in
 - `clear()` - clears the console
 - `exit()` - exits the program
 - `sleep(ms)` - sleeps the program for the given amount of milliseconds
-- `num(str)` - converts a string to a number if it is numeric or returns `NaN`
-- `str(num)` - converts a number to a string
+- `getch()` - waits for a key to be pressed and closes the program
+- `str(...arg)` - converts the arguments to string and returns it
   and so on...
+- `num(...arg)` - converts the arguments to number and returns it
 
 ### other libraries
 
@@ -92,3 +93,6 @@ The standard library is a collection of functions that are used in jsr. It is in
 - `#include <str>` - includes the string library
 - `#include <reg>` - includes the regex library
 - `#include <error>` - includes the error library
+- `#include <file>` - includes the file library
+- `#include <net>` - includes the net library
+<!-- - `#include <crypto>` - includes the crypto library. max char length is 536870888; -->
