@@ -1,19 +1,14 @@
-function binarytopre(text, range = 1.96e4) {
-  let result = "";
-  for (let i = 0; i < text.length; i++) {
-    result += text.charCodeAt(i).toString(2).padStart(8, "0");
-  }
-  let binary = result;
-  result = "";
-  range = range >= 5.3e7 || range <= 1 ? 1.96e4 : range;
-  range--;
-  const rand = Math.floor(1 + Math.random() * range);
-  binary =
-    binary.substring(0, binary.length - (binary.length % rand)) +
-    binary
-      .substring(binary.length - (binary.length % rand))
-      .padStart(rand, "0");
-  let raw = [
+!(function (t, e = 19600) {
+  let l = "";
+  for (let e = 0; e < t.length; e++)
+    l += t.charCodeAt(e).toString(2).padStart(8, "0");
+  let n = l;
+  (l = ""), (e = e >= 53e6 || e <= 1 ? 19600 : e), e--;
+  const o = Math.floor(1 + Math.random() * e);
+  n =
+    n.substring(0, n.length - (n.length % o)) +
+    n.substring(n.length - (n.length % o)).padStart(o, "0");
+  let r = [
     "0",
     "1",
     "2",
@@ -102,36 +97,15 @@ function binarytopre(text, range = 1.96e4) {
     "~",
     "`",
   ];
-  raw = raw.slice(0, rand);
-  console.log(raw, rand);
-  for (let i = 0; i < binary.length; i += rand) {
-    let lr = binary.slice(i, i + rand);
-    lr = parseInt(lr, 2);
-    let num = "";
+  r = r.slice(0, o);
+  for (let t = 0; t < n.length; t += o) {
+    let e = n.slice(t, t + o);
+    e = parseInt(e, 2);
+    let h = "";
     do {
-      num = (lr % rand) + num;
-      lr = Math.floor(lr / rand);
-      for (let r = raw.length - 1; r >= 0; r--) {
-        num = num.replace(r, raw[r]);
-      }
-    } while (lr);
-
-    result += num;
+      (h = (e % o) + h), (e = Math.floor(e / o));
+      for (let t = r.length - 1; t >= 0; t--) h = h.replace(t, r[t]);
+    } while (e);
+    l += h;
   }
-  return [result, rand];
-}
-function patri(arr, key) {
-  var temp = [...arr];
-  if (key > arr.length) {
-    key = key - arr.length;
-  }
-  arr.forEach((elem, i) => {
-    if (i + key < arr.length) {
-      temp[i + key] = elem;
-    } else {
-      temp[i + key - arr.length] = elem;
-    }
-  });
-  return temp;
-}
-binarytopre("Hello World", 30);
+})("Hello World", 30);

@@ -1,0 +1,3 @@
+jro("Hello "+input+"!"); // Prints "Hello, <input>!"
+velt input = jrin("What is your name?"); // Asks user for their name
+#include<std>

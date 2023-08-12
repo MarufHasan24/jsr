@@ -1,8 +1,9 @@
 std.js
-compiler.js
+compiler.max.js
 .gitignore
 .vscode/settings.json
 index.jsr
 index.js
 math_laibrary.max.js
 node_modules/*
+crypto.max.js
