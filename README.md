@@ -42,7 +42,8 @@ For example:
 
 ```jsr
 'this is a block comment'
-jro(x =+ "your name is "); // your name is <name>
+jro(x);
+x =+ "your name is ";
 velt x = jrin("what is your name?");
 #include <std>
 ```
