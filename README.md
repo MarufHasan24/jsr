@@ -1,6 +1,17 @@
 # JSR
 
-jsr stands for "JavaScript Reverse". It is a programming language that is partially identical to JavaScript but in the basic level it has huge difference with Jvascript, but with the syntax reversed. For example, the following code in JavaScript:
+JSR stands for JavaScript Reversed. It is a programming language that is written in JavaScript. **It's a pre release version of [Fungi](https://github.com/fungilang/fungi) programming language.** Since Fungi is not yet released, I'm releasing this as a pre release version of [Fungi compiler](https://marufhasan24.github.io/jsr/console.html). Don't be confused. Fungi is much stronger than JSR.
+
+Main idea of Fungi, which are absent here, are:
+
+- Fungi is a compiled language, but JSR is an interpreted language.
+- Fungi compiler provides an exe file, but JSR is only made to run in [pseudo console](https://marufhasan24.github.io/jsr/console.html).
+- Fungi has more than 20 builtin libraries, but JSR has some of them.
+- Fungi can encrept itself on demand, thus no one can see, edit, copy or steal the code, but that's not necessary for JSR. And many more...
+
+Acually you can count JSR as a subset or Demo version Fungi.
+
+## What is JSR?
 
 ```js
 var x = 5;
