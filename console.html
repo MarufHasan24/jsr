@@ -104,6 +104,15 @@
                 <button onclick="resetFontSize()">Reset fonts</button>
             </div>
             <div class="section">
+                <button onclick="examples()">Load Example</button>
+            </div>
+            <div class="section">
+                <select id="select">
+                    <option value="io">io.fg</option>
+                    <option value="print">print.fg</option>
+                </select>
+            </div>
+            <div class="section">
                 <button onclick="location.reload()">Reset compiler</button>
                 <button id="run" onclick="run()">Run</button>
             </div>
@@ -152,7 +161,17 @@
             }
         });
     </script>
-    <script src="compiler.min.js"></script>
+    <script>
+        let select = document.getElementById("select");
+        let examples = () => {
+            fetch("examples/" + select.value + ".fg")
+                .then((res) => res.text())
+                .then((data) => {
+                    ide.value = data;
+                });
+        };
+    </script>
+    <script src="compiler.js"></script>
 </body>
 
 </html>
