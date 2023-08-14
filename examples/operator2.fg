@@ -1,0 +1,15 @@
+jro(a);
+a /= b; // a = a / b : 0.5 
+a = 5;
+jro(a);
+a =/ b; // a = b / a  : 2
+a = 5;
+jro(a);
+a =* b; // a = b * a  : 50
+a = 5;
+jro(a);
+a *= b; // a = a * b : 50
+velt a = 5;
+velt b = 10;
+velt c = 7;
+#include<std>

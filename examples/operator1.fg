@@ -1,0 +1,15 @@
+jro(a);
+a =- b; // a = b - a : 1
+a = 5;
+jro(a);
+a -= b; // a = a - b : -1
+a = 5;
+jro(a);
+a =+ b; // a =  b + a : 11
+a = 5;
+jro(a);
+a += b; // a = a + b : 11
+velt a = 5;
+velt b = 6;
+velt c = 7;
+#include<std>
